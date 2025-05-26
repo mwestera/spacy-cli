@@ -93,7 +93,7 @@ def sentencize_cli():
 
     parser.add_argument('--balanced', action='store_true', help="whether to balance quotation marks/parentheses within returned sentences; suitable for texts containing only short quotes as parts of larger sentences.")
     parser.add_argument('--endswith', type=str, default=None, help="to split sentences only where the first ends with one of the characters in this string, e.g., '.?!'")
-
+    parser.add_argument('--questions', action='store_true', help="whether to keep only questions.")
 
     parser.add_argument('--spans', action='store_true', help="Whether to output lines like {offset: ..., context: ..., start: ..., end: ..., sentence: ...}.")
     parser.add_argument('--context', action='store_true', help="whether to prepend sentences with some context.")
@@ -121,6 +121,9 @@ def sentencize_cli():
             print()
 
         for n_sent, sent in enumerate(sentencizer(doc)):
+
+            if args.questions and not sent.text.strip().endswith('?'):
+                continue
 
             if args.tree or args.json:
                 sent_as_doc = sent.as_doc()
